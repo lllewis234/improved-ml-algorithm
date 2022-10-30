@@ -6,7 +6,7 @@ import numpy as np
 length = 4
 width = 5
 test_size = 0.5
-shadow_size = 50
+shadow_size = 1000
 data_name = 'orig'
 d = 1
 q1 = 0
@@ -15,9 +15,10 @@ q2 = 0
 # note to self: only do real plots for test_size = 0.5 and shadow_size = 1000
 
 # linear regression file
-f = open('./../clean_results/test_size=0.5_shadow_size=1000_orig_data_qubits_d=2_linear_regression/coefficients_4x5.txt', 'r')
+#f = open('./../clean_results/test_size=0.5_shadow_size=1000_orig_data_qubits_d=2_linear_regression/coefficients_4x5.txt', 'r')
 
-#f = open('./../clean_results/new_algorithm/test_size={}_shadow_size={}_{}_data_qubits_d={}/coefficients_{}x{}.txt'.format(test_size, shadow_size, data_name, d, length, width), 'r')
+# all other files
+f = open('./../clean_results/new_algorithm/test_size={}_shadow_size={}_qubits_d={}/coefficients_{}x{}_{}_data.txt'.format(test_size, shadow_size, d, length, width, data_name), 'r')
 for line in f:
     if line[0:1] == '(':
         q1, q2 = ast.literal_eval(line[11:-1])
@@ -77,9 +78,10 @@ for line in f:
         plt.title('Coefficients of ML Model for (q1, q2) = ({}, {})'.format(q1, q2), fontname='avenir')
         
         # for linear regression test plots
-        plt.savefig('./plots/test_plots_test_size=0.5_shadow_size=1000_orig_data_qubits_d=2_4x5_linear_regression/q1={}_q2={}.png'.format(q1, q2), dpi=300)
+        #plt.savefig('./plots/test_plots_test_size=0.5_shadow_size=1000_orig_data_qubits_d=2_4x5_linear_regression/q1={}_q2={}.png'.format(q1, q2), dpi=300)
 
-        #plt.savefig('./plots/test_plots_test_size={}_shadow_size={}_{}_data_qubits_d={}_{}x{}/q1={}_q2={}.png'.format(test_size, shadow_size, data_name, d, length, width, q1, q2), dpi=300)
+        # for other plots
+        plt.savefig('./plots/test_plots_test_size={}_shadow_size={}_{}_data_qubits_d={}_{}x{}/q1={}_q2={}.png'.format(test_size, shadow_size, data_name, d, length, width, q1, q2), dpi=300)
         plt.clf()
         #plt.show()
 
