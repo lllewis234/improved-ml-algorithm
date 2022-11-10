@@ -2,13 +2,14 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import ast
 import numpy as np
+import os
 
 length = 4
 width = 5
 test_size = 0.5
 shadow_size = 1000
 data_name = 'orig'
-d = 1
+d = 2
 q1 = 0
 q2 = 0
 
@@ -81,7 +82,10 @@ for line in f:
         #plt.savefig('./plots/test_plots_test_size=0.5_shadow_size=1000_orig_data_qubits_d=2_4x5_linear_regression/q1={}_q2={}.png'.format(q1, q2), dpi=300)
 
         # for other plots
-        plt.savefig('./plots/test_plots_test_size={}_shadow_size={}_{}_data_qubits_d={}_{}x{}/q1={}_q2={}.png'.format(test_size, shadow_size, data_name, d, length, width, q1, q2), dpi=300)
+        new_dir = './plots/test_size={}_shadow_size={}_{}_data_qubits_d={}_{}x{}'.format(test_size, shadow_size, data_name, d, length, width)
+        if not os.path.exists(new_dir):
+            os.makedirs(new_dir)
+        plt.savefig('{}/q1={}_q2={}.png'.format(new_dir, q1, q2), dpi=300)
         plt.clf()
         #plt.show()
 
