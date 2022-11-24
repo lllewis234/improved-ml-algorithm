@@ -102,7 +102,20 @@ def make_dataframe():
             for test_size in [0.1, 0.3, 0.5, 0.7, 0.9]:
                 for shadow_size in [50, 100, 250, 500, 1000]:
                     for d in [1, 2, 3]:
-                        row = ['{}x{}'.format(length, width), d, data_name, test_size, shadow_size, 'Best Previous']
+                        # calculate training data size
+                        total_data_size = 300
+                        if data_name == 'orig' and (length == 4 or length == 5 or length == 7):
+                            total_data_size = 100
+                        elif data_name == 'orig' and length == 6:
+                            total_data_size = 97
+                        elif data_name == 'orig' and length == 8:
+                            total_data_size = 92
+                        elif data_name == 'orig' and length == 9:
+                            total_size = 89
+                        training_size = (1 - test_size) * total_data_size
+
+
+                        row = ['{}x{}'.format(length, width), d, data_name, training_size, shadow_size, 'Best Previous']
                         # do processing for previous algorithm
                         orig_alg_file = './clean_results/orig_algorithm_processed/test_size={}_shadow_size={}_qubits_d={}/results_{}x{}_{}_data.txt'.format(test_size, shadow_size, d, length, width, data_name)
                         new_alg_file = './clean_results/new_algorithm/test_size={}_shadow_size={}_qubits_d={}/results_{}x{}_{}_data.txt'.format(test_size, shadow_size, d, length, width, data_name)
@@ -126,7 +139,7 @@ def make_dataframe():
                         data.append(row)
 
                         # do processing for new algorithm
-                        row = ['{}x{}'.format(length, width), d, data_name, test_size, shadow_size, 'New']
+                        row = ['{}x{}'.format(length, width), d, data_name, training_size, shadow_size, 'New']
                         new_alg_file = './clean_results/new_algorithm/test_size={}_shadow_size={}_qubits_d={}/results_{}x{}_{}_data.txt'.format(test_size, shadow_size, d, length, width, data_name)
                         if os.path.exists(new_alg_file):
                             r = open(new_alg_file, 'r')
@@ -140,7 +153,7 @@ def make_dataframe():
                             row.append(avg_pred_error)     
                         data.append(row)
 
-    return pd.DataFrame(data, columns=['System Size', 'Distance', 'Data Set', 'Test Size', 'Shadow Size', 'Algorithm', 'Avg Prediction Error'])
+    return pd.DataFrame(data, columns=['System Size', 'Distance', 'Data Set', 'Training Size', 'Shadow Size', 'Algorithm', 'Avg Prediction Error'])
 
 if __name__ == '__main__':
     #process_orig_algorithm_output()

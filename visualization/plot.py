@@ -92,7 +92,7 @@ def plot_local_region(length, width, test_size, shadow_size, data_name, d):
 
 if __name__ == '__main__':
     # for plotting local region:
-    # length = 6
+    # length = 4
     # width = 5
     # test_size = 0.5
     # shadow_size = 1000
