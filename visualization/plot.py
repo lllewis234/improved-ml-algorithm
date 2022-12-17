@@ -108,19 +108,57 @@ if __name__ == '__main__':
     # only using data where we have both previous method and new method data
     df = df.dropna()
 
+    # for combined 3x3 plots
+    # fig, axs = plt.subplots(3, 3, sharey=True, sharex='col', figsize=(15,8))
+    
+    # for i in range(3):
+    #     for j in range(3):
+    #         xaxis = ['System Size', 'Training Size', 'Shadow Size']
+    #         legend = False
+    #         if j == 2 and i == 2:
+    #             legend = True
+    #         sns.lineplot(
+    #             data=df[df['Distance'] == i + 1],
+    #             x=xaxis[j],
+    #             y='Avg Prediction Error',
+    #             style='Training Size',
+    #             hue='Algorithm',
+    #             marker='o',
+    #             ci=None,
+    #             ax=axs[i][j],
+    #             legend=legend
+    #         )
+    # axs[0][2].set_title('Distance 1', x=1.2, y=0.4)
+    # axs[1][2].set_title('Distance 2', x=1.2, y=0.4)
+    # axs[2][2].set_title('Distance 3', x=1.2, y=0.4)
+
+    # axs[0][2].set_xscale('log')
+    # axs[0][2].set_xticks([50, 100, 250, 500, 1000])
+    # axs[0][2].set_xticklabels([50, 100, 250, 500, 1000])
+
+    # axs[2][2].legend(bbox_to_anchor=(1, 3.5), loc='upper left', ncol=1)
+
+    # for single plots
     sns.relplot(
         kind='line',
         data=df,
-        x='Test Size',
+        x='System Size',
         y='Avg Prediction Error',
         col='Distance',
+        row='Data Set',
         style='Algorithm',
         hue='Algorithm',
         marker='o',
-        col_wrap=3,
+        #col_wrap=3,
         ci=None
     )
+    plt.xticks(['4x5', '5x5', '6x5', '7x5', '8x5', '9x5'])
 
-    plt.savefig('./prediction_error_plots/test_plots/prediction_error_vs._test_size/algorithm_lines.png')
+    # for shadow size plots
+    # plt.xscale('log')
+    # plt.xticks([50, 100, 250, 500, 1000])
+
+    # plt.tight_layout()
+    plt.savefig('./prediction_error_plots/test_plots/prediction_error_vs._system_size/algorithm_lines_data_sep.png')
 
     print('done.')

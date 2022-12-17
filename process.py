@@ -111,7 +111,7 @@ def make_dataframe():
                         elif data_name == 'orig' and length == 8:
                             total_data_size = 92
                         elif data_name == 'orig' and length == 9:
-                            total_size = 89
+                            total_data_size = 89
                         training_size = (1 - test_size) * total_data_size
 
 
