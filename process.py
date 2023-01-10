@@ -134,7 +134,7 @@ def make_dataframe():
                                         method_counter = 1
                                         n += 1
                             avg_pred_errors = {k : v / n for k, v in avg_pred_errors.items()}
-                            best_avg_pred_error = max(avg_pred_errors.values())
+                            best_avg_pred_error = min(avg_pred_errors.values())
                             row.append(best_avg_pred_error)
                         data.append(row)
 
