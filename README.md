@@ -31,5 +31,4 @@ pip install -r requirements.txt
 * `clean_results_old` stores the results for running both new and original methods.
 * `heisenberg_data` stores the training data used in Huang et al, 2022.
 * `new_data` stores new training data generated with more samples (up to 500).
-* `old_code` stores older versions of the code and testing versions.
 * `visualization` stores plots from running the plotting blocks of `Code.ipynb`.
