@@ -108,4 +108,4 @@ if __name__ == "__main__":
     with tqdm_joblib(desc="loading data", total=ntot) as progress_bar:
         Parallel(n_jobs=16)(delayed(get_data_and_create_ntk)(
             nr, ncol=5, shadow_size=ns, data_name=dn, nlayer=nl, do_normalization=n)
-            for nr, ns, dn, nl, n, nd in product(rows, nshadows, datasets, nlayers, norm))
+            for nr, ns, dn, nl, n in product(rows, nshadows, datasets, nlayers, norm))
