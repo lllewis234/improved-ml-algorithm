@@ -53,6 +53,10 @@ def parse_args(return_parser=False, default_algo='new'):
                         choices=[5],
                         type=int,
                         help="num of col in grid")
+    parser.add_argument("--model-seed",
+                        default=42,
+                        type=int,
+                        help="seed for model")
     parser.add_argument("--data-seed",
                         default=0,
                         type=int,
@@ -185,6 +189,7 @@ def train_and_predict(q1, q2, hp, data, omega):
     all_edges = get_all_edges(hp.nrow, hp.ncol).tolist()
     R_it = [5, 10, 20, 40]
     gamma_it = [0.4, 0.5, 0.6, 0.65, 0.7, 0.75]
+    np.random.seed(hp.model_seed)
     for R, gamma in product(R_it, gamma_it):
         # feature mapping
         Xfeature_train = get_feature_vectors(
@@ -248,11 +253,11 @@ def main(hp):
         newdata_suffix = ""
 
     if hp.lasso_lib == 'celer':
-        data_path = './{}/{}_algorithm_{}_maxiter={}_maxep={}_tol={}/test_size={}_shadow_size={}_{}'.format(
-            result_dir, hp.algo_type, hp.lasso_lib, hp.lasso_maxiter, hp.lasso_maxep, hp.lasso_tol, hp.test_size, hp.shadow_size, qubits_suffix)
+        data_path = './{}/{}_algorithm_{}_maxiter={}_maxep={}_tol={}_seed={}/test_size={}_shadow_size={}_{}'.format(
+            result_dir, hp.algo_type, hp.lasso_lib, hp.lasso_maxiter, hp.lasso_maxep, hp.lasso_tol, hp.data_seed, hp.test_size, hp.shadow_size, qubits_suffix)
     else:
-        data_path = './{}/{}_algorithm_{}_maxiter={}_tol={}/test_size={}_shadow_size={}_{}'.format(
-            result_dir, hp.algo_type, hp.lasso_lib, hp.lasso_maxiter, hp.lasso_tol, hp.test_size, hp.shadow_size, qubits_suffix)
+        data_path = './{}/{}_algorithm_{}_maxiter={}_tol={}_seed={}/test_size={}_shadow_size={}_{}'.format(
+            result_dir, hp.algo_type, hp.lasso_lib, hp.lasso_maxiter, hp.lasso_tol, hp.data_seed, hp.test_size, hp.shadow_size, qubits_suffix)
 
     if newdata_suffix:
         data_path = data_path.replace(

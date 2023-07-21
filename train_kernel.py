@@ -1,24 +1,24 @@
 # import before all to avoid gpu usage
-import os
-os.environ["CUDA_VISIBLE_DEVICES"] = ""
-
-# main modules
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn import svm
 from sklearn.kernel_ridge import KernelRidge
 from sklearn.exceptions import ConvergenceWarning
 import numpy as np
-
-# additional modules
 import warnings
 from copy import deepcopy
 from tqdm import tqdm
-
-# custom modules
 from kernels import create_dirichlet_kernel, create_ntk_kernel
 from dataloader import get_data
 from utils import get_nearby_qubit_pairs
 from train import prepare_path, parse_args
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = ""  # noqa
+
+# main modules
+
+# additional modules
+
+# custom modules
 #from sklearn.ensemble import RandomForestRegressor
 #import jax
 
@@ -29,12 +29,20 @@ def train_and_predict(q1, q2, hp, data, kernel, opt="linear", method=""):
     kernel = kernel.copy()
     Xfull, Ytrain, Yfull = data
 
+    # comitted cold
     # instance norm only helps old dirichlet
     # if method == "dirichlet": # skip for gauss and ntk
     #     # kernel shape nsamples: feature dim
     #     # instance-wise normalization
     #     instance_norms = np.linalg.norm(kernel, axis=-1, keepdims=True)
     #     kernel /= instance_norms
+    ##############################################
+
+    if method == "dirichlet" or method == "gauss":  # skip for ntk
+        # kernel shape nsamples: feature dim
+        # instance-wise normalization
+        instance_norms = np.linalg.norm(kernel, axis=-1, keepdims=True)
+        kernel /= instance_norms
 
     # training data (estimated from measurement data)
     y = Ytrain[:, q1 - 1, q2 - 1]
@@ -51,6 +59,7 @@ def train_and_predict(q1, q2, hp, data, kernel, opt="linear", method=""):
 
     # use cross validation to find the best method + hyper-param
     best_cv_score, test_score = 999.0, 999.0
+    np.random.seed(hp.data_seed)
     for ML_method in [(lambda Cx: svm.SVR(kernel=opt, C=Cx, tol=hp.svr_tol)), (lambda Cx: KernelRidge(kernel=opt, alpha=1 / (2 * Cx)))]:
         for C in [0.0125, 0.025, 0.05, 0.125, 0.25, 0.5, 1.0, 2.0]:
             score = -np.mean(cross_val_score(ML_method(C), X_train, y_train,
@@ -85,9 +94,18 @@ def main(hp):
     else:
         newdata_suffix = ""
 
-    data_path = './{}/{}_algorithm_svrtol={}_ntk-norm={}_diri-inclx={}_diri-sf={}/test_size={}_shadow_size={}_{}'.format(
-        result_dir, hp.algo_type, hp.svr_tol, hp.ntk_normalization, hp.dirichlet_include_x, hp.dirichlet_size_factor,
+    # WITH instance norm but only for gaussian and dirichlet:
+    data_path = './{}/{}_algorithm_svrtol={}_ntk-norm={}_diri-inclx={}_diri-sf={}_seed={}/test_size={}_shadow_size={}_{}'.format(
+        result_dir, hp.algo_type, hp.svr_tol, hp.ntk_normalization, hp.dirichlet_include_x, hp.dirichlet_size_factor, hp.data_seed,
         hp.test_size, hp.shadow_size, qubits_suffix)
+    # NO instance norm:
+    # data_path = './{}/{}_algorithm_svrtol={}_ntk-norm={}_diri-inclx={}_diri-sf={}_inst-norm=False/test_size={}_shadow_size={}_{}'.format(
+    #     result_dir, hp.algo_type, hp.svr_tol, hp.ntk_normalization, hp.dirichlet_include_x, hp.dirichlet_size_factor,
+    #     hp.test_size, hp.shadow_size, qubits_suffix)
+    # NO suffix for instance norm (original way):
+    # data_path = './{}/{}_algorithm_svrtol={}_ntk-norm={}_diri-inclx={}_diri-sf={}/test_size={}_shadow_size={}_{}'.format(
+    #     result_dir, hp.algo_type, hp.svr_tol, hp.ntk_normalization, hp.dirichlet_include_x, hp.dirichlet_size_factor,
+    #     hp.test_size, hp.shadow_size, qubits_suffix)
 
     if newdata_suffix:
         data_path = data_path.replace(
