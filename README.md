@@ -1,6 +1,6 @@
 # Improved machine learning algorithm for predicting ground state properties
 
-DOI: 10.5281/zenodo.10154894
+[![DOI](https://zenodo.org/badge/540067962.svg)](https://zenodo.org/doi/10.5281/zenodo.10154893)
 
 # Install
 
